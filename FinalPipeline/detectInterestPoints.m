@@ -54,8 +54,12 @@ for i_current = 1:numOfFiles
     % problem statement in Assignment 6 we should use the Normalized eight-
     % point Algorithm with RANSAC but as I don't have it yet, I will use
     % the basic RANSAC from Assignment 2 instead
-    inlierMatches = transParamsRANSAC(locs_current,descriptors_current, ...
-                    locs_next,descriptors_next, matches, 10000);
+    %inlierMatches = transParamsRANSAC(locs_current,descriptors_current, ...
+    %                locs_next,descriptors_next, matches, 10000);
+    
+    % Use the normalized 8-point RANSAC algorithm to get the inliers
+    inlierMatches = normalized8pointRANSAC(locs_current,descriptors_current, ...
+                    locs_next,descriptors_next, matches, 1000);
              
     % Add the inlier matches to the point-view matrix
     if i_current == 1 %initialize the point-view matrix
@@ -119,7 +123,6 @@ for i_current = 1:numOfFiles
         
         % Remove the respective columns
         PVM(:, inconsistentColumns) = [];
-        fprintf("Number of inconsistent columns: %d", size(inconsistentColumns, 2))
       
         % Remove the last row
         PVM(end, :) = [];

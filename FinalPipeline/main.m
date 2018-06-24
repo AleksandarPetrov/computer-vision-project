@@ -82,6 +82,10 @@ end
 % added yet
 [coordinates, cameras] = structureReconstruction(locs, descriptors, PVM(1:19, :));
 
+%% Apply bundle adjustment
+
+[BAcoordinates, BAcameras] = bundleAdjustment(PVM, locs, coordinates, cameras);
+
 %% Show the original points and the 3D points as projected by the estimated cameras
 
 if true
@@ -115,6 +119,23 @@ if true
     hist(sqrt(sum((projectedLocations-originalLocations).^2, 2)))
 end
 
+%% Denoise and visualize the point cloud
+
+% Remove any NaNs
+NaNCols = any(isnan(coordinates));
+coordinatesClean = coordinates(:, ~NaNCols);
+colorsClean = colors(:, ~NaNCols);
+
+figure('Color','black')
+originalPC = pointCloud(coordinatesClean', 'Color', colorsClean');
+pcshow(originalPC);
+axis off
+
+figure('Color','black')
+denoisedPC = pcdenoise(originalPC);
+pcshow(denoisedPC)
+axis off
+
 %% Visualize the 3D reconstruction
 
 
@@ -130,7 +151,7 @@ p = coordinates';
 [t]=MyCrustOpen(p);
 
 % plot the points cloud
-figure(1);
+figure;
 set(gcf,'position',[0,0,1280,800]);
 %subplot(1,2,1)
 hold on

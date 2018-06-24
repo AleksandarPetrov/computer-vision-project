@@ -142,7 +142,7 @@ for i_current = imageOrder
        
         
         % Find the inliers
-        threshold = 30.0;
+        threshold = 10.0;
         inlierIdxes = find(sqrt(sum((imageProjections-originalImageLocs).^2, 1)) <= threshold);
         
         % Plot a histogram of mismatch distances
